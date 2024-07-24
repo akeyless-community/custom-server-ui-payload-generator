@@ -148,25 +148,61 @@ const App = () => {
                 </div>
 
                 {recording && (
-                    <DragDropContext onDragEnd={handleDragEnd}>
-                        <div className="grid grid-cols-4 gap-4 mb-4">
-                            {Object.entries(mappings).map(([key, value]) => (
-                                <Droppable key={key} droppableId={key}>
-                                    {(provided) => (
+                    <>
+                        <div className="mb-4 p-4 bg-blue-100 border-l-4 border-blue-500 text-blue-700">
+                            <p className="font-bold">Next Steps:</p>
+                            <p>Drag the selectors from the "Unmapped Fields" box to the appropriate mapping boxes (Username, Password, New Password).</p>
+                        </div>
+                        <DragDropContext onDragEnd={handleDragEnd}>
+                            <div className="grid grid-cols-4 gap-4 mb-4">
+                                {Object.entries(mappings).map(([key, value]) => (
+                                    <Droppable key={key} droppableId={key}>
+                                        {(provided, snapshot) => (
+                                            <div
+                                                ref={provided.innerRef}
+                                                {...provided.droppableProps}
+                                                className={`bg-white p-4 rounded-lg shadow border border-akeyless-border min-h-[100px] transition-all duration-200 ${snapshot.isDraggingOver ? 'bg-blue-50 border-blue-300' : ''
+                                                    }`}
+                                            >
+                                                <h2 className="text-xl font-semibold mb-2 text-akeyless-text">{key}</h2>
+                                                {value.map((item, index) => (
+                                                    <Draggable key={item} draggableId={item} index={index}>
+                                                        {(provided, snapshot) => (
+                                                            <div
+                                                                ref={provided.innerRef}
+                                                                {...provided.draggableProps}
+                                                                {...provided.dragHandleProps}
+                                                                className={`bg-akeyless-bg p-2 mb-2 rounded border border-akeyless-border transition-all duration-200 ${snapshot.isDragging ? 'shadow-lg' : ''
+                                                                    }`}
+                                                            >
+                                                                {item}
+                                                            </div>
+                                                        )}
+                                                    </Draggable>
+                                                ))}
+                                                {provided.placeholder}
+                                            </div>
+                                        )}
+                                    </Droppable>
+                                ))}
+                                <Droppable droppableId="unmappedFields">
+                                    {(provided, snapshot) => (
                                         <div
                                             ref={provided.innerRef}
                                             {...provided.droppableProps}
-                                            className="bg-white p-4 rounded-lg shadow border border-akeyless-border min-h-[100px]"
+                                            className={`bg-white p-4 rounded-lg shadow border border-akeyless-border min-h-[100px] transition-all duration-200 ${snapshot.isDraggingOver ? 'bg-blue-50 border-blue-300' : ''
+                                                }`}
                                         >
-                                            <h2 className="text-xl font-semibold mb-2 text-akeyless-text">{key}</h2>
-                                            {value.map((item, index) => (
+                                            <h2 className="text-xl font-semibold mb-2 text-akeyless-text">Unmapped Fields</h2>
+                                            {unmappedFields.map((item, index) => (
                                                 <Draggable key={item} draggableId={item} index={index}>
-                                                    {(provided) => (
+                                                    {(provided, snapshot) => (
                                                         <div
                                                             ref={provided.innerRef}
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
-                                                            className="bg-akeyless-bg p-2 mb-2 rounded border border-akeyless-border"
+                                                            className={`bg-akeyless-bg p-2 mb-2 rounded border border-akeyless-border transition-all duration-200 ${snapshot.isDragging ? 'shadow-lg' : ''
+                                                                }`}
                                                         >
                                                             {item}
                                                         </div>
@@ -177,35 +213,9 @@ const App = () => {
                                         </div>
                                     )}
                                 </Droppable>
-                            ))}
-                            <Droppable droppableId="unmappedFields">
-                                {(provided) => (
-                                    <div
-                                        ref={provided.innerRef}
-                                        {...provided.droppableProps}
-                                        className="bg-white p-4 rounded-lg shadow border border-akeyless-border min-h-[100px]"
-                                    >
-                                        <h2 className="text-xl font-semibold mb-2 text-akeyless-text">Unmapped Fields</h2>
-                                        {unmappedFields.map((item, index) => (
-                                            <Draggable key={item} draggableId={item} index={index}>
-                                                {(provided) => (
-                                                    <div
-                                                        ref={provided.innerRef}
-                                                        {...provided.draggableProps}
-                                                        {...provided.dragHandleProps}
-                                                        className="bg-akeyless-bg p-2 mb-2 rounded border border-akeyless-border"
-                                                    >
-                                                        {item}
-                                                    </div>
-                                                )}
-                                            </Draggable>
-                                        ))}
-                                        {provided.placeholder}
-                                    </div>
-                                )}
-                            </Droppable>
-                        </div>
-                    </DragDropContext>
+                            </div>
+                        </DragDropContext>
+                    </>
                 )}
 
                 <div className="mt-4">
