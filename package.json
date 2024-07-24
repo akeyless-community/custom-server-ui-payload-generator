@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "homepage": "https://akeyless-community.github.io/custom-server-ui-payload-generator/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
