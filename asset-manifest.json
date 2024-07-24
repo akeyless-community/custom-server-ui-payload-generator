@@ -1,12 +1,12 @@
 {
   "files": {
     "main.css": "/custom-server-ui-payload-generator/static/css/main.31d6cfe0.css",
-    "main.js": "/custom-server-ui-payload-generator/static/js/main.ad5a9714.js",
+    "main.js": "/custom-server-ui-payload-generator/static/js/main.edd4ba9d.js",
     "index.html": "/custom-server-ui-payload-generator/index.html",
-    "main.ad5a9714.js.map": "/custom-server-ui-payload-generator/static/js/main.ad5a9714.js.map"
+    "main.edd4ba9d.js.map": "/custom-server-ui-payload-generator/static/js/main.edd4ba9d.js.map"
   },
   "entrypoints": [
     "static/css/main.31d6cfe0.css",
-    "static/js/main.ad5a9714.js"
+    "static/js/main.edd4ba9d.js"
   ]
 }
