@@ -12,7 +12,7 @@ const Toast = ({ message, isVisible, onHide }) => {
         if (isVisible) {
             const timer = setTimeout(() => {
                 onHide();
-            }, 10000);
+            }, 5000);
             return () => clearTimeout(timer);
         }
     }, [isVisible, onHide]);
@@ -20,7 +20,7 @@ const Toast = ({ message, isVisible, onHide }) => {
     if (!isVisible) return null;
 
     return (
-        <div className="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg transition-opacity duration-300 text-lg">
+        <div className="fixed bottom-4 right-4 bg-akeyless-blue text-white px-4 py-2 rounded-md shadow-lg transition-opacity duration-300">
             {message}
         </div>
     );
@@ -134,38 +134,66 @@ const App = () => {
     const isGenerateButtonEnabled = unmappedFields.length === 0 && recording !== null;
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-4">Akeyless Custom UI Rotation Payload Generator</h1>
+        <div className="bg-akeyless-bg min-h-screen">
+            <div className="container mx-auto p-4">
+                <h1 className="text-3xl font-bold mb-4 text-akeyless-text">Akeyless Custom UI Rotation Payload Generator</h1>
 
-            <div {...getRootProps()} className="border-2 border-dashed border-gray-300 rounded-lg p-4 mb-4">
-                <input {...getInputProps()} />
-                {isDragActive ? (
-                    <p>Drop the file here ...</p>
-                ) : (
-                    <p>Drag 'n' drop your recording JSON file here, or click to select files</p>
-                )}
-            </div>
+                <div {...getRootProps()} className="border-2 border-dashed border-akeyless-border rounded-lg p-4 mb-4 bg-white">
+                    <input {...getInputProps()} />
+                    {isDragActive ? (
+                        <p>Drop the file here ...</p>
+                    ) : (
+                        <p>Drag 'n' drop your recording JSON file here, or click to select files</p>
+                    )}
+                </div>
 
-            {recording && (
-                <DragDropContext onDragEnd={handleDragEnd}>
-                    <div className="grid grid-cols-4 gap-4 mb-4">
-                        {Object.entries(mappings).map(([key, value]) => (
-                            <Droppable key={key} droppableId={key}>
+                {recording && (
+                    <DragDropContext onDragEnd={handleDragEnd}>
+                        <div className="grid grid-cols-4 gap-4 mb-4">
+                            {Object.entries(mappings).map(([key, value]) => (
+                                <Droppable key={key} droppableId={key}>
+                                    {(provided) => (
+                                        <div
+                                            ref={provided.innerRef}
+                                            {...provided.droppableProps}
+                                            className="bg-white p-4 rounded-lg shadow border border-akeyless-border min-h-[100px]"
+                                        >
+                                            <h2 className="text-xl font-semibold mb-2 text-akeyless-text">{key}</h2>
+                                            {value.map((item, index) => (
+                                                <Draggable key={item} draggableId={item} index={index}>
+                                                    {(provided) => (
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                            className="bg-akeyless-bg p-2 mb-2 rounded border border-akeyless-border"
+                                                        >
+                                                            {item}
+                                                        </div>
+                                                    )}
+                                                </Draggable>
+                                            ))}
+                                            {provided.placeholder}
+                                        </div>
+                                    )}
+                                </Droppable>
+                            ))}
+                            <Droppable droppableId="unmappedFields">
                                 {(provided) => (
                                     <div
                                         ref={provided.innerRef}
                                         {...provided.droppableProps}
-                                        className="bg-gray-100 p-4 rounded-lg"
+                                        className="bg-white p-4 rounded-lg shadow border border-akeyless-border min-h-[100px]"
                                     >
-                                        <h2 className="text-xl font-semibold mb-2">{key}</h2>
-                                        {value.map((item, index) => (
+                                        <h2 className="text-xl font-semibold mb-2 text-akeyless-text">Unmapped Fields</h2>
+                                        {unmappedFields.map((item, index) => (
                                             <Draggable key={item} draggableId={item} index={index}>
                                                 {(provided) => (
                                                     <div
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
                                                         {...provided.dragHandleProps}
-                                                        className="bg-white p-2 mb-2 rounded"
+                                                        className="bg-akeyless-bg p-2 mb-2 rounded border border-akeyless-border"
                                                     >
                                                         {item}
                                                     </div>
@@ -176,101 +204,75 @@ const App = () => {
                                     </div>
                                 )}
                             </Droppable>
-                        ))}
-                        <Droppable droppableId="unmappedFields">
-                            {(provided) => (
-                                <div
-                                    ref={provided.innerRef}
-                                    {...provided.droppableProps}
-                                    className="bg-gray-100 p-4 rounded-lg"
-                                >
-                                    <h2 className="text-xl font-semibold mb-2">Unmapped Fields</h2>
-                                    {unmappedFields.map((item, index) => (
-                                        <Draggable key={item} draggableId={item} index={index}>
-                                            {(provided) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    className="bg-white p-2 mb-2 rounded"
-                                                >
-                                                    {item}
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    ))}
-                                    {provided.placeholder}
-                                </div>
-                            )}
-                        </Droppable>
-                    </div>
-                </DragDropContext>
-            )}
-
-            <div className="mt-4">
-                <h2 className="text-2xl font-semibold mb-2">Password Options</h2>
-                <div className="grid grid-cols-2 gap-4">
-                    {Object.entries(passwordOptions).map(([key, value]) => (
-                        <div key={key} className="flex items-center">
-                            <label className="mr-2">{key}:</label>
-                            {typeof value === 'boolean' ? (
-                                <input
-                                    type="checkbox"
-                                    checked={value}
-                                    onChange={(e) => setPasswordOptions({ ...passwordOptions, [key]: e.target.checked })}
-                                />
-                            ) : (
-                                <input
-                                    type="text"
-                                    value={value}
-                                    onChange={(e) => setPasswordOptions({ ...passwordOptions, [key]: e.target.value })}
-                                    className="border rounded px-2 py-1"
-                                />
-                            )}
                         </div>
-                    ))}
-                </div>
-            </div>
+                    </DragDropContext>
+                )}
 
-            <button
-                onClick={generatePayload}
-                disabled={!isGenerateButtonEnabled}
-                className={`mt-4 px-4 py-2 rounded ${isGenerateButtonEnabled
-                    ? 'bg-blue-500 text-white hover:bg-blue-600'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-            >
-                Generate Payload
-            </button>
-
-            {generatedPayload !== '{}' && (
                 <div className="mt-4">
-                    <h2 className="text-2xl font-semibold mb-2">Generated Payload</h2>
-                    <div className="relative">
-                        <button
-                            onClick={copyToClipboard}
-                            className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
-                        >
-                            Copy
-                        </button>
-
-                        <textarea
-                            ref={textAreaRef}
-                            value={generatedPayload}
-                            readOnly
-                            className="absolute top-0 left-0 opacity-0 z--1"
-                        />
-                        <SyntaxHighlighter language="json" style={docco}>
-                            {generatedPayload}
-                        </SyntaxHighlighter>
+                    <h2 className="text-2xl font-semibold mb-2 text-akeyless-text">Password Options</h2>
+                    <div className="grid grid-cols-2 gap-4">
+                        {Object.entries(passwordOptions).map(([key, value]) => (
+                            <div key={key} className="flex items-center">
+                                <label className="mr-2">{key}:</label>
+                                {typeof value === 'boolean' ? (
+                                    <input
+                                        type="checkbox"
+                                        checked={value}
+                                        onChange={(e) => setPasswordOptions({ ...passwordOptions, [key]: e.target.checked })}
+                                    />
+                                ) : (
+                                    <input
+                                        type="text"
+                                        value={value}
+                                        onChange={(e) => setPasswordOptions({ ...passwordOptions, [key]: e.target.value })}
+                                        className="border rounded px-2 py-1"
+                                    />
+                                )}
+                            </div>
+                        ))}
                     </div>
                 </div>
-            )}
-            <Toast
-                message="Payload copied to clipboard!"
-                isVisible={showToast}
-                onHide={() => setShowToast(false)}
-            />
+
+                <button
+                    onClick={generatePayload}
+                    disabled={!isGenerateButtonEnabled}
+                    className={`mt-4 px-4 py-2 rounded ${isGenerateButtonEnabled
+                        ? 'bg-akeyless-blue text-white hover:bg-opacity-90'
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        }`}
+                >
+                    Generate Payload
+                </button>
+
+                {generatedPayload !== '{}' && (
+                    <div className="mt-4">
+                        <h2 className="text-2xl font-semibold mb-2 text-akeyless-text">Generated Payload</h2>
+                        <div className="relative">
+                            <button
+                                onClick={copyToClipboard}
+                                className="absolute top-2 right-2 bg-akeyless-blue text-white px-2 py-1 rounded hover:bg-opacity-90"
+                            >
+                                Copy
+                            </button>
+
+                            <textarea
+                                ref={textAreaRef}
+                                value={generatedPayload}
+                                readOnly
+                                className="absolute top-0 left-0 opacity-0 z--1"
+                            />
+                            <SyntaxHighlighter language="json" style={docco}>
+                                {generatedPayload}
+                            </SyntaxHighlighter>
+                        </div>
+                    </div>
+                )}
+                <Toast
+                    message="Payload copied to clipboard!"
+                    isVisible={showToast}
+                    onHide={() => setShowToast(false)}
+                />
+            </div>
         </div>
     );
 };
