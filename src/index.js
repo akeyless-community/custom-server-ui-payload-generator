@@ -1,10 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
+import ReactDOM from 'react-dom/client';
+import './index.css';  // Make sure this line is present
 import App from './App';
-
-// Add this line to include Tailwind CSS
-import 'tailwindcss/tailwind.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

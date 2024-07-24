@@ -13,13 +13,15 @@
     "deploy": "gh-pages -d build"
   },
   "devDependencies": {
-    "gh-pages": "^6.1.1"
+    "autoprefixer": "^10.4.19",
+    "gh-pages": "^6.1.1",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.6"
   },
   "dependencies": {
     "array-union": "^1.0.2",
     "array-uniq": "^1.0.3",
     "async": "^3.2.5",
-    "autoprefixer": "^10.4.19",
     "balanced-match": "^1.0.2",
     "brace-expansion": "^1.1.11",
     "commander": "^11.1.0",
@@ -53,14 +55,12 @@
     "pinkie": "^2.0.4",
     "pinkie-promise": "^2.0.1",
     "pkg-dir": "^4.2.0",
-    "postcss": "^8.4.39",
     "react-beautiful-dnd": "^13.1.1",
     "react-dropzone": "^14.2.3",
     "react-scripts": "^5.0.1",
     "react-syntax-highlighter": "^15.5.0",
     "semver": "^6.3.1",
     "strip-outer": "^1.0.1",
-    "tailwindcss": "^3.4.6",
     "trim-repeated": "^1.0.0",
     "universalify": "^2.0.1",
     "wrappy": "^1.0.2"

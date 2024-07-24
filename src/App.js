@@ -1,6 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import json from 'react-syntax-highlighter/dist/esm/languages/hljs/json';
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
+SyntaxHighlighter.registerLanguage('json', json);
 
 const App = () => {
     const [recording, setRecording] = useState(null);
@@ -21,6 +26,8 @@ const App = () => {
         strict: true,
         symbolsToUse: "!@#$%^&*-_+=:"
     });
+    const [generatedPayload, setGeneratedPayload] = useState('{}');
+    const textAreaRef = useRef(null);
 
     const onDrop = useCallback((acceptedFiles) => {
         const file = acceptedFiles[0];
@@ -81,11 +88,14 @@ const App = () => {
             return;
         }
 
+        const usernameStep = recording.steps.find(step =>
+            step.type === "change" && JSON.stringify(step.selectors) === mappings.usernameMappings[0]);
+        const newPasswordStep = recording.steps.find(step =>
+            step.type === "change" && JSON.stringify(step.selectors) === mappings.newPasswordMappings[0]);
+
         const payload = {
-            username: recording.steps.find(step =>
-                JSON.stringify(step.selectors) === mappings.usernameMappings[0])?.value || '',
-            password: recording.steps.find(step =>
-                JSON.stringify(step.selectors) === mappings.passwordMappings[0])?.value || '',
+            username: usernameStep ? usernameStep.value : '',
+            password: newPasswordStep ? newPasswordStep.value : '',
             recording: recording,
             usernameMappings: mappings.usernameMappings.map(JSON.parse),
             passwordMappings: mappings.passwordMappings.map(JSON.parse),
@@ -93,9 +103,10 @@ const App = () => {
             passwordOptions: passwordOptions
         };
 
-        console.log(JSON.stringify(payload, null, 2));
-        alert('Payload generated! Check the console for the output.');
+        setGeneratedPayload(JSON.stringify(payload, null, 2));
     };
+
+    const isGenerateButtonEnabled = unmappedFields.length === 0 && recording !== null;
 
     return (
         <div className="container mx-auto p-4">
@@ -112,7 +123,7 @@ const App = () => {
 
             {recording && (
                 <DragDropContext onDragEnd={handleDragEnd}>
-                    <div className="grid grid-cols-4 gap-4">
+                    <div className="grid grid-cols-4 gap-4 mb-4">
                         {Object.entries(mappings).map(([key, value]) => (
                             <Droppable key={key} droppableId={key}>
                                 {(provided) => (
@@ -198,10 +209,41 @@ const App = () => {
 
             <button
                 onClick={generatePayload}
-                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                disabled={!isGenerateButtonEnabled}
+                className={`mt-4 px-4 py-2 rounded ${isGenerateButtonEnabled
+                    ? 'bg-blue-500 text-white hover:bg-blue-600'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
             >
                 Generate Payload
             </button>
+
+            {generatedPayload !== '{}' && (
+                <div className="mt-4">
+                    <h2 className="text-2xl font-semibold mb-2">Generated Payload</h2>
+                    <div className="relative">
+                        <button
+                            onClick={() => {
+                                navigator.clipboard.writeText(generatedPayload);
+                                alert('Payload copied to clipboard!');
+                            }}
+                            className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+                        >
+                            Copy
+                        </button>
+
+                        <textarea
+                            ref={textAreaRef}
+                            value={generatedPayload}
+                            readOnly
+                            className="absolute top-0 left-0 opacity-0 z--1"
+                        />
+                        <SyntaxHighlighter language="json" style={docco}>
+                            {generatedPayload}
+                        </SyntaxHighlighter>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
