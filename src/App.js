@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -7,7 +7,27 @@ import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 SyntaxHighlighter.registerLanguage('json', json);
 
+const Toast = ({ message, isVisible, onHide }) => {
+    useEffect(() => {
+        if (isVisible) {
+            const timer = setTimeout(() => {
+                onHide();
+            }, 10000);
+            return () => clearTimeout(timer);
+        }
+    }, [isVisible, onHide]);
+
+    if (!isVisible) return null;
+
+    return (
+        <div className="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-lg transition-opacity duration-300 text-lg">
+            {message}
+        </div>
+    );
+};
+
 const App = () => {
+    const [showToast, setShowToast] = useState(false);
     const [recording, setRecording] = useState(null);
     const [mappings, setMappings] = useState({
         usernameMappings: [],
@@ -28,6 +48,11 @@ const App = () => {
     });
     const [generatedPayload, setGeneratedPayload] = useState('{}');
     const textAreaRef = useRef(null);
+
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(generatedPayload);
+        setShowToast(true);
+    };
 
     const onDrop = useCallback((acceptedFiles) => {
         const file = acceptedFiles[0];
@@ -110,7 +135,7 @@ const App = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-4">Custom UI Credential Rotator</h1>
+            <h1 className="text-3xl font-bold mb-4">Akeyless Custom UI Rotation Payload Generator</h1>
 
             <div {...getRootProps()} className="border-2 border-dashed border-gray-300 rounded-lg p-4 mb-4">
                 <input {...getInputProps()} />
@@ -223,10 +248,7 @@ const App = () => {
                     <h2 className="text-2xl font-semibold mb-2">Generated Payload</h2>
                     <div className="relative">
                         <button
-                            onClick={() => {
-                                navigator.clipboard.writeText(generatedPayload);
-                                alert('Payload copied to clipboard!');
-                            }}
+                            onClick={copyToClipboard}
                             className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
                         >
                             Copy
@@ -244,6 +266,11 @@ const App = () => {
                     </div>
                 </div>
             )}
+            <Toast
+                message="Payload copied to clipboard!"
+                isVisible={showToast}
+                onHide={() => setShowToast(false)}
+            />
         </div>
     );
 };
