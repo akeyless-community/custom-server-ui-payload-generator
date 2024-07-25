@@ -50,7 +50,7 @@ Contributions to improve the Akeyless Custom UI Rotation Payload Generator are w
 
 ## License
 
-[Insert your chosen license here]
+MIT
 
 ## Support
 
