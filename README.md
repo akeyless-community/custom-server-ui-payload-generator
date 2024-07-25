@@ -20,7 +20,7 @@ In the realm of secrets management and credential rotation, there are scenarios 
 
 1. **Record UI Interaction**: Use a browser's developer tools (e.g., Chrome DevTools Recorder) to record the UI interaction for credential rotation.
 2. **Generate JSON**: Export the recorded interaction as a JSON file.
-3. **Upload to Tool**: Use this web application to upload the JSON file.
+3. **Upload to Tool**: [Use this web application](https://akeyless-community.github.io/custom-server-ui-payload-generator/) to upload the JSON file.
 4. **Map Fields**: Drag and drop the recorded selectors to map them to the appropriate Akeyless fields (username, current password, new password).
 5. **Configure Options**: Adjust password generation options if needed.
 6. **Generate Payload**: Create the payload required by Akeyless for custom rotation.
